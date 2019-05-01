@@ -1,6 +1,5 @@
 import React, { Component, Fragment as _ } from 'react';
 import { Row, Col, Table } from 'reactstrap';
-//import PropTypes from 'prop-types';
 import { map, find, isEmpty, split, get } from 'lodash';
 import axios from 'axios';
 import Highstock from 'react-highcharts/ReactHighstock.src';
@@ -32,17 +31,20 @@ class WeatherUI extends Component {
     highstockConfig: {}
   }
 
+  //First step here we will fetch all country list in component did mount and save it to state "countryList"
   componentDidMount = () => {
     const countryList = map(countries, 'name');
     this.setState({ countryList });
   }
 
+  //This helps to toggle the every dropdown state which determines whether it is expanded or not.
   toggleDropdown = (state) => {
     this.setState(prevState => ({
       [state]: !prevState[state]
     }));
   }
 
+  //this helps to set value of selected country, city, unit, and dates.
   onClickDropdownValue = async (key, value) => {
     await this.setState({
       [key]: value
@@ -73,13 +75,14 @@ class WeatherUI extends Component {
         hasResetSelectedDate: true, 
         hasResetDateList: true 
       });
-      this.fetchWeather(value);
+      this.fetchWeather();
     }
     else if (key === 'selectedDate') {
-      this.setForecast(value);
+      this.setForecast();
     }    
   }
 
+  //this helps to reset the values on select values from dropdown
   resteState = (props) => {
     const { 
       hasResetForecast, 
@@ -101,6 +104,7 @@ class WeatherUI extends Component {
     });
   }
 
+  //this helps to set cilty list after selection of country
   setCityList = (selectedCountry) => {
     const data = find(countries, { 'name': selectedCountry }),
           { code, cities } = data;
@@ -110,6 +114,7 @@ class WeatherUI extends Component {
     });
   }
 
+  //this will fetch all forecast after selecting country, city and unit
   fetchWeather = async () => {
     this.setState({ forecast: [], dateList: [], selectedDate: 'Select Date' });
     const { selectedCity, countryCode, selectedUnit } = this.state;
@@ -125,6 +130,7 @@ class WeatherUI extends Component {
       });    
   }
 
+  //this will set all the weather information and date list to the state.
   arrangeDatewiseWeather = async (weatherList) => {
     const weatherData = {};
     const dateList = [];
@@ -140,6 +146,7 @@ class WeatherUI extends Component {
     this.setState({ weatherData, dateList });
   }
 
+  //this will set forecast of selected date and highchart information to state.
   setForecast = async () => {
     const { weatherData, selectedDate } = this.state,
           forecast = get(weatherData, selectedDate);    
@@ -266,6 +273,7 @@ class WeatherUI extends Component {
   }
 }
 
+//this table will show the forecast data ion tabular form
 const ForecastData = ({ forecast }) => (
   <Table className="mt-3">
     <thead>
@@ -291,9 +299,5 @@ const ForecastData = ({ forecast }) => (
     </tbody>
   </Table>
 );
-
-// Weather.propTypes = {
-//   classes: PropTypes.object.isRequired,
-// };
 
 export default WeatherUI;

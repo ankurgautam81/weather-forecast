@@ -3,13 +3,13 @@ import { Row, Col, Table } from 'reactstrap';
 //import PropTypes from 'prop-types';
 import { map, find, isEmpty, split, get } from 'lodash';
 import axios from 'axios';
+import Highstock from 'react-highcharts/ReactHighstock.src';
 
 import { DropdownList } from '../element/dropdown';
 import { countries } from '../../constant/countries';
 
 const url = 'https://api.openweathermap.org/data/2.5/forecast?';
 const apiKey = 'cb293b2c3f7a6d57c3587a5f758a9366';
-
 
 class WeatherUI extends Component {
   state = {
@@ -29,6 +29,7 @@ class WeatherUI extends Component {
     countryCode: '',
     weatherData: {},    
     forecast: [],
+    highstockConfig: {}
   }
 
   componentDidMount = () => {
@@ -86,7 +87,7 @@ class WeatherUI extends Component {
       hasResetSelectedCity, 
       hasResetDateList, 
       hasResetSelectedDate, 
-      hasResetSelectedUnit,      
+      hasResetSelectedUnit,  
     } = props;
     
     this.setState({ 
@@ -96,6 +97,7 @@ class WeatherUI extends Component {
       dateList: hasResetDateList ? [] : this.state.dateList, 
       selectedDate: hasResetSelectedDate ? 'Select Date' : this.state.selectedDate,
       selectedUnit: hasResetSelectedUnit ? 'Select Unit' : this.state.selectedUnit,
+      highstockConfig: {},
     });
   }
 
@@ -138,10 +140,31 @@ class WeatherUI extends Component {
     this.setState({ weatherData, dateList });
   }
 
-  setForecast = () => {
+  setForecast = async () => {
     const { weatherData, selectedDate } = this.state,
-          forecast = get(weatherData, selectedDate);
-    this.setState({ forecast });
+          forecast = get(weatherData, selectedDate);    
+
+    const data = [];
+    await map(forecast, item => {
+      const { dt_txt, main } = item;
+      const dateTime = new Date(dt_txt);
+      data.push([dateTime.getTime(), main.temp]);
+    });
+
+    const highstockConfig = {
+      rangeSelector: {
+        selected: 1
+      },
+      title: {
+        text: 'Weather Forecast'
+      },
+      series: [{
+        name: 'Temprature',
+        data,
+      }]
+    };
+
+    this.setState({ forecast, highstockConfig });
   }
 
 
@@ -162,6 +185,7 @@ class WeatherUI extends Component {
             isUnitDropdownOpen,
             selectedUnit,
             unitList,
+            highstockConfig,
           } = state,
 
           showUnitDropdown = selectedCity && selectedCity !== 'Select City',
@@ -235,7 +259,8 @@ class WeatherUI extends Component {
             <h4 className="mt-3">Hourly forecast</h4>
             <ForecastData {...{ forecast }} />
           </_>          
-        }        
+        }   
+        {!isEmpty(highstockConfig) && <Highstock {...{ config: highstockConfig }} />}
       </div>
     );
   }

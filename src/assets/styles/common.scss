@@ -1,0 +1,24 @@
+@import './colors.scss';
+
+body {
+    overflow-x: hidden;
+    margin: 0;
+}
+
+.weather {
+  .primary {
+    color: $primary;
+  }
+
+  .dropdown,
+  .show {
+    .dropdown-toggle,
+    .dropdown-toggle:hover,
+    .dropdown-toggle:focus {
+      background: $white;
+      width: 100%;
+      color: $black;
+      box-shadow: none;
+    }
+  }
+}

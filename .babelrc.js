@@ -6,16 +6,16 @@ const envPresetConfig = (babelEnv === 'webpack') ? { targets: { browsers: '> 1%'
 
 
 module.exports = {
-    presets: [
-      [ "@babel/preset-env", envPresetConfig ],
-      '@babel/preset-react'
-    ],
-    plugins: [     
-      '@babel/plugin-proposal-class-properties', 
-      '@babel/plugin-transform-react-jsx',
-      'lodash',
-      ["@babel/plugin-proposal-decorators", { "legacy": true }],
-      '@babel/plugin-transform-runtime'
-    ],
-    sourceMaps: true,
-  };
+  presets: [
+    [ "@babel/preset-env", envPresetConfig ],
+    '@babel/preset-react'
+  ],
+  plugins: [     
+    '@babel/plugin-proposal-class-properties', 
+    '@babel/plugin-transform-react-jsx',
+    'lodash',
+    ["@babel/plugin-proposal-decorators", { "legacy": true }],
+    '@babel/plugin-transform-runtime'
+  ],
+  sourceMaps: true,
+};

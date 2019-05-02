@@ -54,7 +54,7 @@ rules:
   keyword-spacing: warn
   linebreak-style:
     - warn
-    - windows
+    - unix
   max-len:
     - warn
     - code: 220
